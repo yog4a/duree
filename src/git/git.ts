@@ -3,6 +3,7 @@ import { execFileSync } from "node:child_process";
 export type GitInfo = {
   root: string | null;
   branch: string | null;
+  remote: string | null;
 };
 
 const CACHE_MS = 30_000;
@@ -22,9 +23,17 @@ function readGit(dir: string): GitInfo {
   try {
     const root = git(dir, ["rev-parse", "--show-toplevel"]);
     const branch = git(dir, ["rev-parse", "--abbrev-ref", "HEAD"]);
-    return { root, branch };
+    return { root, branch, remote: readRemote(dir) };
   } catch {
-    return { root: null, branch: null };
+    return { root: null, branch: null, remote: null };
+  }
+}
+
+function readRemote(dir: string): string | null {
+  try {
+    return git(dir, ["remote", "get-url", "origin"]);
+  } catch {
+    return null;
   }
 }
 

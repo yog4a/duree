@@ -4,6 +4,7 @@ import type { AiFileStats } from "../ai/ai";
 import { dependenciesFromSource } from "../dependencies/dependencies";
 import { isAiActive, isReviewing, languageFromPath, sourceSlice } from "./extension.document";
 import { gitInfo } from "../git/git";
+import { projectName } from "../git/git.repo";
 import { categoryFor, projectRootCount, type Heartbeat } from "../heartbeat/heartbeat";
 
 export type Machine = {
@@ -38,7 +39,7 @@ export function heartbeatForDocument(
       building: meta.building,
       reviewing: document ? isReviewing(document) : false,
     }),
-    project: path.basename(root),
+    project: projectName(root, info.remote),
     projectRootCount: projectRootCount(root),
     branch: info.branch,
     language: document?.languageId ?? languageFromPath(file),
@@ -76,7 +77,7 @@ export function heartbeatForPath(
     entity: file,
     type: "file",
     category: "ai coding",
-    project: path.basename(root),
+    project: projectName(root, info.remote),
     projectRootCount: projectRootCount(root),
     branch: info.branch,
     language: languageFromPath(file),

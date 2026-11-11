@@ -22,7 +22,7 @@
     "build": "tsc -p tsconfig.json",
     "lint": "oxlint",
     "install-cursor": "npm run build && node scripts/install.mjs",
-    "test": "node --test dist/heartbeat/heartbeat.test.js dist/dependencies/dependencies.test.js dist/ai/ai.test.js dist/store/store.test.js"
+    "test": "node --test dist/heartbeat/heartbeat.test.js dist/dependencies/dependencies.test.js dist/ai/ai.test.js dist/store/store.test.js dist/store/store.project.test.js dist/git/git.test.js"
   },
   "devDependencies": {
     "@types/node": "^24.10.0",

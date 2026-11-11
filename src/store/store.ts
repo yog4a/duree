@@ -2,10 +2,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { dayKey, type Heartbeat } from "../heartbeat/heartbeat";
-
-const DIR_MODE = 0o700;
-const FILE_MODE = 0o600;
-const DAY_FILE = /^(\d{4}-\d{2}-\d{2})\.jsonl$/;
+import { DAY_FILE, DIR_MODE, FILE_MODE } from "./store.constants";
+import { migrateProjects, readBeats } from "./store.migrate";
 
 export function dataDir(home = os.homedir()): string {
   const next = path.join(home, ".duree");
@@ -21,19 +19,19 @@ export function daysDir(home = os.homedir()): string {
 }
 
 export function appendHeartbeat(beat: Heartbeat, home = os.homedir()): void {
-  migrateLegacy(home);
+  migrateProjects(home);
   const file = path.join(daysDir(home), `${dayKey(beat.time)}.jsonl`);
   fs.mkdirSync(path.dirname(file), { recursive: true, mode: DIR_MODE });
   fs.appendFileSync(file, `${JSON.stringify(beat)}\n`, { mode: FILE_MODE });
 }
 
 export function readDay(day: string, home = os.homedir()): Heartbeat[] {
-  migrateLegacy(home);
-  return readFile(path.join(daysDir(home), `${day}.jsonl`));
+  migrateProjects(home);
+  return readBeats(path.join(daysDir(home), `${day}.jsonl`));
 }
 
 export function listDays(home = os.homedir()): string[] {
-  migrateLegacy(home);
+  migrateProjects(home);
   const dir = daysDir(home);
   let names: string[];
   try {
@@ -53,46 +51,4 @@ export function listDays(home = os.homedir()): string[] {
   }
   days.sort();
   return days;
-}
-
-function migrateLegacy(home: string): void {
-  const dir = dataDir(home);
-  const legacy = path.join(dir, "heartbeats.jsonl");
-  const migrating = path.join(dir, "heartbeats.jsonl.migrating");
-  if (fs.existsSync(legacy)) {
-    fs.renameSync(legacy, migrating);
-  }
-  if (!fs.existsSync(migrating)) {
-    return;
-  }
-  for (const beat of readFile(migrating)) {
-    const file = path.join(dir, "days", `${dayKey(beat.time)}.jsonl`);
-    fs.mkdirSync(path.dirname(file), { recursive: true, mode: DIR_MODE });
-    fs.appendFileSync(file, `${JSON.stringify(beat)}\n`, { mode: FILE_MODE });
-  }
-  fs.renameSync(migrating, path.join(dir, "heartbeats.jsonl.archive"));
-}
-
-function readFile(file: string): Heartbeat[] {
-  let raw: string;
-  try {
-    raw = fs.readFileSync(file, "utf8");
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
-      return [];
-    }
-    throw error;
-  }
-  const beats: Heartbeat[] = [];
-  for (const line of raw.split("\n")) {
-    if (line.length === 0) {
-      continue;
-    }
-    try {
-      beats.push(JSON.parse(line) as Heartbeat);
-    } catch (error) {
-      console.error("duree skipped a bad heartbeat line", error);
-    }
-  }
-  return beats;
 }

@@ -29,7 +29,7 @@ Each heartbeat keeps:
 | Field    | Examples                                                          |
 | -------- | ----------------------------------------------------------------- |
 | File     | absolute path, cursor line and column, line count                 |
-| Place    | project, git branch, language                                     |
+| Place    | `owner/repo`, or the folder path when the repo has no remote       |
 | Activity | `coding`, `ai coding`, `debugging`, `building`, `code reviewing`  |
 | Machine  | hostname, editor, OS                                              |
 | AI       | session, input tokens, output tokens, prompt length, line changes |
