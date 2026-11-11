@@ -1,6 +1,6 @@
 # ⏱️ Durée
 
-🔒 A fully local alternative. The code is short enough to review with an AI and confirm there is no backdoor and nothing that spies on what you type. Everything stays on this machine.
+🔒 A fully local alternative. The code is short enough to review with an AI. Nothing records what you type. Everything stays on this machine.
 
 A Cursor extension that tracks coding time **on the machine where the folder is open**.
 
