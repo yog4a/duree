@@ -128,7 +128,7 @@ export function renderToday(summary: Summary): string {
   lines.push(`  tokens entrée: ${summary.aiInputTokens}`);
   lines.push(`  tokens sortie: ${summary.aiOutputTokens}`);
   lines.push(`  longueur des prompts: ${summary.aiPromptLength}`);
-  lines.push("", "Journal local de cette machine: ~/.duree/heartbeats.jsonl");
+  lines.push("", "Journal du jour: ~/.duree/days/");
   return lines.join("\n");
 }
 
@@ -179,6 +179,28 @@ export function categoryFor(input: {
   if (input.building) return "building";
   if (input.reviewing) return "code reviewing";
   return "coding";
+}
+
+/** Local calendar day for a unix timestamp, `YYYY-MM-DD`. */
+export function dayKey(unixSeconds: number): string {
+  const date = new Date(unixSeconds * 1000);
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+export function renderHistory(days: { day: string; total: number }[]): string {
+  const lines = ["Historique", ""];
+  const sorted = [...days].sort((a, b) => b.day.localeCompare(a.day));
+  if (sorted.length === 0) lines.push("Pas encore de journée.");
+  let sum = 0;
+  for (const row of sorted) {
+    sum += row.total;
+    lines.push(`${row.day}: ${formatDuration(row.total)}  ~/.duree/days/${row.day}.jsonl`);
+  }
+  lines.push("", `Total: ${formatDuration(sum)}`);
+  lines.push("Les fichiers du dossier days/ sont conservés.");
+  return lines.join("\n");
 }
 
 export function formatDuration(seconds: number): string {

@@ -10,12 +10,14 @@ import {
   formatDuration,
   lineChangeCount,
   projectRootCount,
+  dayKey,
+  renderHistory,
   renderToday,
   shouldRecord,
   summarize,
   type Heartbeat,
 } from "./heartbeat";
-import { appendHeartbeat, readHeartbeats } from "./store";
+import { appendHeartbeat, listDays, readDay } from "./store";
 
 const OUTPUT = "Durée";
 const AI_SCAN_MS = 60_000;
@@ -130,6 +132,9 @@ export function activate(context: vscode.ExtensionContext): void {
     }),
     vscode.commands.registerCommand("duree.showToday", () => {
       showToday();
+    }),
+    vscode.commands.registerCommand("duree.showHistory", () => {
+      showHistory();
     }),
   );
 
@@ -296,19 +301,20 @@ function languageFromPath(file: string): string {
 }
 
 function todayBeats(): Heartbeat[] {
-  const start = startOfLocalDay();
-  return readHeartbeats().filter((beat) => beat.time >= start);
-}
-
-function startOfLocalDay(): number {
-  const day = new Date();
-  day.setHours(0, 0, 0, 0);
-  return day.getTime() / 1000;
+  return readDay(dayKey(Date.now() / 1000));
 }
 
 function showToday(): void {
   const channel = vscode.window.createOutputChannel(OUTPUT);
   channel.clear();
   channel.appendLine(renderToday(summarize(todayBeats())));
+  channel.show(true);
+}
+
+function showHistory(): void {
+  const rows = listDays().map((day) => ({ day, total: summarize(readDay(day)).total }));
+  const channel = vscode.window.createOutputChannel(OUTPUT);
+  channel.clear();
+  channel.appendLine(renderHistory(rows));
   channel.show(true);
 }

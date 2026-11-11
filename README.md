@@ -2,7 +2,7 @@
 
 A Cursor extension that tracks coding time **on the machine where the folder is open**.
 
-The log stays in `~/.duree/heartbeats.jsonl`. Nothing is sent over the network.
+Each day is its own file in `~/.duree/days/`. Nothing is deleted, and nothing is sent over the network.
 
 It can run next to WakaTime. It does not replace it.
 
@@ -10,7 +10,7 @@ It can run next to WakaTime. It does not replace it.
 
 The status bar shows a watch icon and today's time.
 
-Open the command palette and run **Durée: aujourd'hui** for the full day:
+Open the command palette and run **Durée: aujourd'hui** for the full day, or **Durée: historique** for every saved day:
 
 - 📁 projects
 - 🗣️ languages
@@ -57,7 +57,7 @@ find dist -name '*.js' ! -name '*.test.js' -exec cp {} "$DEST/dist/" \;
 
 In Cursor, on that machine: **Developer: Reload Window**.
 
-The log for that machine is `~/.duree/heartbeats.jsonl`. Another computer keeps its own. An old `~/.codetime` folder is renamed to `~/.duree` on first launch.
+Each day is kept as `~/.duree/days/YYYY-MM-DD.jsonl`. Another computer keeps its own files. An old `~/.codetime` folder is renamed to `~/.duree` on first launch, and a single `heartbeats.jsonl` is split into those daily files and kept as `heartbeats.jsonl.archive`.
 
 ## 🛠️ Development
 

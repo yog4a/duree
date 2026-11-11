@@ -5,9 +5,11 @@ import {
   SESSION_GAP_SECONDS,
   categoryFor,
   entityLabel,
+  dayKey,
   formatDuration,
   lineChangeCount,
   projectRootCount,
+  renderHistory,
   renderToday,
   shouldRecord,
   summarize,
@@ -101,6 +103,22 @@ test("ai activity wins, then debug, build, review, coding", () => {
   assert.equal(categoryFor({ aiActive: false, debugging: false, building: true, reviewing: true }), "building");
   assert.equal(categoryFor({ aiActive: false, debugging: false, building: false, reviewing: true }), "code reviewing");
   assert.equal(categoryFor({ aiActive: false, debugging: false, building: false, reviewing: false }), "coding");
+});
+
+test("a timestamp stays on its local calendar day", () => {
+  const noon = new Date(2026, 10, 11, 12, 0, 0).getTime() / 1000;
+  assert.equal(dayKey(noon), "2026-11-11");
+});
+
+test("history lists every day and names its file", () => {
+  const text = renderHistory([
+    { day: "2026-11-10", total: 60 },
+    { day: "2026-11-11", total: 120 },
+  ]);
+  assert.equal(text.includes("2026-11-11: 2m  ~/.duree/days/2026-11-11.jsonl"), true);
+  assert.equal(text.includes("2026-11-10: 1m  ~/.duree/days/2026-11-10.jsonl"), true);
+  assert.ok(text.indexOf("2026-11-11") < text.indexOf("2026-11-10"));
+  assert.equal(text.includes("Total: 3m"), true);
 });
 
 test("duration format", () => {
