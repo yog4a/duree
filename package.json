@@ -1,7 +1,7 @@
 {
   "name": "duree",
   "displayName": "Durée",
-  "description": "Suivi local des mêmes signaux que WakaTime. Aucun réseau. Le journal garde les compteurs et les chemins, pas le texte.",
+  "description": "Local coding-time tracker. No network. The journal keeps counters and paths, not text.",
   "version": "0.4.0",
   "publisher": "yogaa",
   "license": "UNLICENSED",
@@ -26,11 +26,11 @@
     "commands": [
       {
         "command": "duree.showToday",
-        "title": "Durée: aujourd'hui"
+        "title": "Durée: Today"
       },
       {
         "command": "duree.showHistory",
-        "title": "Durée: historique"
+        "title": "Durée: History"
       }
     ]
   }

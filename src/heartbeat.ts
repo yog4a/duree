@@ -1,4 +1,4 @@
-/** Gap above this starts a new session and counts as zero. Same window WakaTime uses. */
+/** Gap above this starts a new session and counts as zero. */
 export const SESSION_GAP_SECONDS = 15 * 60;
 
 /** Non-write heartbeats for the same file are dropped inside this window. */
@@ -101,15 +101,15 @@ export function ranked(map: Map<string, number>): [string, number][] {
 }
 
 export function renderToday(summary: Summary): string {
-  const lines = [`Aujourd'hui: ${formatDuration(summary.total)}`, ""];
+  const lines = [`Today: ${formatDuration(summary.total)}`, ""];
   const sections: [string, Map<string, number>, number][] = [
-    ["Projets", summary.byProject, 20],
-    ["Langages", summary.byLanguage, 20],
-    ["Catégories", summary.byCategory, 20],
+    ["Projects", summary.byProject, 20],
+    ["Languages", summary.byLanguage, 20],
+    ["Categories", summary.byCategory, 20],
     ["Branches", summary.byBranch, 20],
-    ["Fichiers", summary.byEntity, 15],
-    ["Éditeurs", summary.byEditor, 10],
-    ["Systèmes", summary.byOs, 10],
+    ["Files", summary.byEntity, 15],
+    ["Editors", summary.byEditor, 10],
+    ["Systems", summary.byOs, 10],
     ["Machines", summary.byMachine, 10],
   ];
   for (const [title, map, limit] of sections) {
@@ -122,13 +122,13 @@ export function renderToday(summary: Summary): string {
     }
     lines.push("");
   }
-  lines.push("Activité");
-  lines.push(`  lignes humaines: ${summary.humanLineChanges}`);
-  lines.push(`  lignes IA: ${summary.aiLineChanges}`);
-  lines.push(`  tokens entrée: ${summary.aiInputTokens}`);
-  lines.push(`  tokens sortie: ${summary.aiOutputTokens}`);
-  lines.push(`  longueur des prompts: ${summary.aiPromptLength}`);
-  lines.push("", "Journal du jour: ~/.duree/days/");
+  lines.push("Activity");
+  lines.push(`  human lines: ${summary.humanLineChanges}`);
+  lines.push(`  AI lines: ${summary.aiLineChanges}`);
+  lines.push(`  input tokens: ${summary.aiInputTokens}`);
+  lines.push(`  output tokens: ${summary.aiOutputTokens}`);
+  lines.push(`  prompt length: ${summary.aiPromptLength}`);
+  lines.push("", "Today's file: ~/.duree/days/");
   return lines.join("\n");
 }
 
@@ -155,7 +155,7 @@ function add(map: Map<string, number>, key: string, gap: number): void {
   map.set(key, (map.get(key) ?? 0) + gap);
 }
 
-/** Same count WakaTime documents: `/Users/user/projects/wakatime` is 5. */
+/** Segment count of the project root. `/Users/user/projects/sample` is 5. */
 export function projectRootCount(root: string): number {
   if (root.length === 0) return 0;
   return root.split(/[/\\]/).length;
@@ -190,16 +190,16 @@ export function dayKey(unixSeconds: number): string {
 }
 
 export function renderHistory(days: { day: string; total: number }[]): string {
-  const lines = ["Historique", ""];
+  const lines = ["History", ""];
   const sorted = [...days].sort((a, b) => b.day.localeCompare(a.day));
-  if (sorted.length === 0) lines.push("Pas encore de journée.");
+  if (sorted.length === 0) lines.push("No days yet.");
   let sum = 0;
   for (const row of sorted) {
     sum += row.total;
     lines.push(`${row.day}: ${formatDuration(row.total)}  ~/.duree/days/${row.day}.jsonl`);
   }
   lines.push("", `Total: ${formatDuration(sum)}`);
-  lines.push("Les fichiers du dossier days/ sont conservés.");
+  lines.push("Day files in days/ are kept.");
   return lines.join("\n");
 }
 

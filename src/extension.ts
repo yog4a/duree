@@ -36,7 +36,7 @@ export function activate(context: vscode.ExtensionContext): void {
   const status = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left, 0);
   statusItem = status;
   status.command = "duree.showToday";
-  status.tooltip = "Durée. Temps de code local, aujourd'hui. Aucun envoi réseau.";
+  status.tooltip = "Durée. Local coding time, today. Nothing is sent.";
 
   const refresh = () => {
     status.text = `$(watch) ${formatDuration(summarize(todayBeats()).total)}`;

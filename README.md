@@ -6,13 +6,11 @@ A Cursor extension that tracks coding time **on the machine where the folder is 
 
 Each day is its own file in `~/.duree/days/`. Nothing is deleted, and nothing is sent over the network.
 
-It can run next to WakaTime. It does not replace it.
-
 ## ✨ What you see
 
 The status bar shows a watch icon and today's time.
 
-Open the command palette and run **Durée: aujourd'hui** for the full day, or **Durée: historique** for every saved day:
+Open the command palette and run **Durée: Today** for the full day, or **Durée: History** for every saved day:
 
 - 📁 projects
 - 🗣️ languages
@@ -28,13 +26,13 @@ Activity in a file is recorded at most once every **2 minutes**. A save is alway
 
 Each heartbeat keeps:
 
-| Field | Examples |
-| --- | --- |
-| File | absolute path, cursor line and column, line count |
-| Place | project, git branch, language |
-| Activity | `coding`, `ai coding`, `debugging`, `building`, `code reviewing` |
-| Machine | hostname, editor, OS |
-| AI | session, input tokens, output tokens, prompt length, line changes |
+| Field    | Examples                                                          |
+| -------- | ----------------------------------------------------------------- |
+| File     | absolute path, cursor line and column, line count                 |
+| Place    | project, git branch, language                                     |
+| Activity | `coding`, `ai coding`, `debugging`, `building`, `code reviewing`  |
+| Machine  | hostname, editor, OS                                              |
+| AI       | session, input tokens, output tokens, prompt length, line changes |
 
 Dependencies are read from the open file for JavaScript, TypeScript, Python, Go, Rust, and `package.json`.
 

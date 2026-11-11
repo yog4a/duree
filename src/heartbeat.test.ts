@@ -67,27 +67,27 @@ test("gaps inside a session add up, a long pause starts over", () => {
   assert.equal(summary.byCategory.get("coding"), 240);
 });
 
-test("entity label drops the project root the way WakaTime does", () => {
+test("entity label drops the project root", () => {
   assert.equal(
     entityLabel({
-      entity: "/Users/user/projects/wakatime/models/user.py",
+      entity: "/Users/user/projects/sample/models/user.py",
       projectRootCount: 5,
     }),
     "models/user.py",
   );
 });
 
-test("today view lists the same slices as a WakaTime summary", () => {
+test("today view lists each slice", () => {
   const summary = summarize([beat(0), beat(60)]);
   const text = renderToday(summary);
-  for (const title of ["Projets", "Langages", "Catégories", "Branches", "Fichiers", "Éditeurs", "Machines"]) {
+  for (const title of ["Projects", "Languages", "Categories", "Branches", "Files", "Editors", "Machines"]) {
     assert.equal(text.includes(title), true);
   }
   assert.equal(text.includes("polymarket: 1m (100%)"), true);
 });
 
-test("project root count matches the WakaTime path example", () => {
-  assert.equal(projectRootCount("/Users/user/projects/wakatime"), 5);
+test("project root count is the number of path segments", () => {
+  assert.equal(projectRootCount("/Users/user/projects/sample"), 5);
   assert.equal(projectRootCount(""), 0);
 });
 
