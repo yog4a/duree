@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
-import { dayKey, type Heartbeat } from "./heartbeat";
+import { dayKey, type Heartbeat } from "../heartbeat/heartbeat";
 import { appendHeartbeat, listDays, readDay } from "./store";
 
 function beat(time: number): Heartbeat {

@@ -1,4 +1,4 @@
-import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, statSync, writeFileSync } from "node:fs";
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -7,10 +7,24 @@ const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
 const id = `${pkg.publisher}.${pkg.name}`;
 const folderName = `${id}-${pkg.version}`;
-const built = join(root, "dist", "extension.js");
+const built = join(root, "dist", "extension", "extension.js");
+
+function copyBuilt(from, to) {
+  for (const name of readdirSync(from)) {
+    const source = join(from, name);
+    if (statSync(source).isDirectory()) {
+      copyBuilt(source, join(to, name));
+      continue;
+    }
+    if (name.endsWith(".js") && !name.endsWith(".test.js")) {
+      mkdirSync(to, { recursive: true });
+      cpSync(source, join(to, name));
+    }
+  }
+}
 
 if (!existsSync(built)) {
-  console.error("dist/extension.js is missing. Run npm run build first.");
+  console.error("dist/extension/extension.js is missing. Run npm run build first.");
   process.exit(1);
 }
 
@@ -25,22 +39,26 @@ for (const extensionsDir of extensionDirs) {
   const dest = join(extensionsDir, folderName);
   mkdirSync(join(dest, "dist"), { recursive: true });
   cpSync(join(root, "package.json"), join(dest, "package.json"));
-  for (const name of readdirSync(join(root, "dist"))) {
-    if (name.endsWith(".js") && !name.endsWith(".test.js")) cpSync(join(root, "dist", name), join(dest, "dist", name));
-  }
+  copyBuilt(join(root, "dist"), join(dest, "dist"));
 
   for (const name of readdirSync(extensionsDir)) {
-    if (!name.startsWith(`${id}-`) || name === folderName || name.endsWith(".off")) continue;
+    if (!name.startsWith(`${id}-`) || name === folderName || name.endsWith(".off")) {
+      continue;
+    }
     const from = join(extensionsDir, name);
     let parked = `${from}.off`;
     let n = 2;
-    while (existsSync(parked)) parked = `${from}.off${n++}`;
+    while (existsSync(parked)) {
+      parked = `${from}.off${n++}`;
+    }
     renameSync(from, parked);
   }
 
   const registryPath = join(extensionsDir, "extensions.json");
   const list = existsSync(registryPath) ? JSON.parse(readFileSync(registryPath, "utf8")) : [];
-  if (!Array.isArray(list)) throw new Error(`${registryPath} is not a list`);
+  if (!Array.isArray(list)) {
+    throw new Error(`${registryPath} is not a list`);
+  }
   const next = list.filter((entry) => entry?.identifier?.id !== id && entry?.identifier?.id !== "yogaa.codetime");
   next.push({
     identifier: { id },

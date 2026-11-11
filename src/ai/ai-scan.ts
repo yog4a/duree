@@ -2,7 +2,8 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { parseAiLine, tailStart, type AiEvent } from "./ai";
-import { dataDir } from "./store";
+import { jsonlFiles } from "./ai-scan.files";
+import { readOffsets, writeOffsets } from "./ai-scan.offsets";
 
 const MAX_TAIL = 2_000_000;
 const DEPTH = 6;
@@ -52,52 +53,19 @@ function readTail(file: string, start: number, size: number): { events: AiEvent[
     fs.closeSync(fd);
   }
   const lastNewline = buffer.lastIndexOf(0x0a);
-  if (lastNewline === -1) return { events: [], end: length >= MAX_TAIL ? from + length : from };
+  if (lastNewline === -1) {
+    return { events: [], end: length >= MAX_TAIL ? from + length : from };
+  }
   const body = buffer.subarray(0, lastNewline).toString("utf8");
   const events: AiEvent[] = [];
   for (const line of body.split("\n")) {
-    if (line.length === 0) continue;
+    if (line.length === 0) {
+      continue;
+    }
     const event = parseAiLine(line, file);
-    if (event) events.push(event);
+    if (event) {
+      events.push(event);
+    }
   }
   return { events, end: from + lastNewline + 1 };
-}
-
-function jsonlFiles(dir: string, depth: number): string[] {
-  if (depth < 0) return [];
-  let entries: fs.Dirent[];
-  try {
-    entries = fs.readdirSync(dir, { withFileTypes: true });
-  } catch {
-    return [];
-  }
-  const files: string[] = [];
-  for (const entry of entries) {
-    if (entry.name === "node_modules") continue;
-    const full = path.join(dir, entry.name);
-    if (entry.isDirectory()) files.push(...jsonlFiles(full, depth - 1));
-    else if (entry.name.endsWith(".jsonl")) files.push(full);
-  }
-  return files;
-}
-
-function offsetsFile(home: string): string {
-  return path.join(dataDir(home), "ai-offsets.json");
-}
-
-function readOffsets(home: string): Record<string, number> {
-  try {
-    const parsed = JSON.parse(fs.readFileSync(offsetsFile(home), "utf8")) as unknown;
-    if (!parsed || typeof parsed !== "object" || Array.isArray(parsed)) return {};
-    return parsed as Record<string, number>;
-  } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return {};
-    return {};
-  }
-}
-
-function writeOffsets(home: string, offsets: Record<string, number>): void {
-  const file = offsetsFile(home);
-  fs.mkdirSync(path.dirname(file), { recursive: true, mode: 0o700 });
-  fs.writeFileSync(file, JSON.stringify(offsets), { mode: 0o600 });
 }

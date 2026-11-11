@@ -10,7 +10,9 @@ const cache = new Map<string, GitInfo & { at: number }>();
 
 export function gitInfo(dir: string, now = Date.now()): GitInfo {
   const cached = cache.get(dir);
-  if (cached && now - cached.at < CACHE_MS) return cached;
+  if (cached && now - cached.at < CACHE_MS) {
+    return cached;
+  }
   const info = readGit(dir);
   cache.set(dir, { ...info, at: now });
   return info;

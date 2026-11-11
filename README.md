@@ -62,5 +62,6 @@ Node.js and npm.
 ```bash
 npm install
 npm test
+npm run lint
 npm run build
 ```

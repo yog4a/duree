@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { assignAi, parseAiLine, tailStart } from "./ai";
+import { parseAiLine, tailStart } from "./ai";
+import { assignAi } from "./ai.assign";
 
 test("claude edit keeps tokens, line counts, and drops the prompt text", () => {
   const line = JSON.stringify({

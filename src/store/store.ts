@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { dayKey, type Heartbeat } from "./heartbeat";
+import { dayKey, type Heartbeat } from "../heartbeat/heartbeat";
 
 const DIR_MODE = 0o700;
 const FILE_MODE = 0o600;
@@ -10,7 +10,9 @@ const DAY_FILE = /^(\d{4}-\d{2}-\d{2})\.jsonl$/;
 export function dataDir(home = os.homedir()): string {
   const next = path.join(home, ".duree");
   const previous = path.join(home, ".codetime");
-  if (!fs.existsSync(next) && fs.existsSync(previous)) fs.renameSync(previous, next);
+  if (!fs.existsSync(next) && fs.existsSync(previous)) {
+    fs.renameSync(previous, next);
+  }
   return next;
 }
 
@@ -37,13 +39,17 @@ export function listDays(home = os.homedir()): string[] {
   try {
     names = fs.readdirSync(dir);
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return [];
+    }
     throw error;
   }
   const days: string[] = [];
   for (const name of names) {
     const match = DAY_FILE.exec(name);
-    if (match) days.push(match[1]);
+    if (match) {
+      days.push(match[1]);
+    }
   }
   days.sort();
   return days;
@@ -53,8 +59,12 @@ function migrateLegacy(home: string): void {
   const dir = dataDir(home);
   const legacy = path.join(dir, "heartbeats.jsonl");
   const migrating = path.join(dir, "heartbeats.jsonl.migrating");
-  if (fs.existsSync(legacy)) fs.renameSync(legacy, migrating);
-  if (!fs.existsSync(migrating)) return;
+  if (fs.existsSync(legacy)) {
+    fs.renameSync(legacy, migrating);
+  }
+  if (!fs.existsSync(migrating)) {
+    return;
+  }
   for (const beat of readFile(migrating)) {
     const file = path.join(dir, "days", `${dayKey(beat.time)}.jsonl`);
     fs.mkdirSync(path.dirname(file), { recursive: true, mode: DIR_MODE });
@@ -68,12 +78,16 @@ function readFile(file: string): Heartbeat[] {
   try {
     raw = fs.readFileSync(file, "utf8");
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") return [];
+    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+      return [];
+    }
     throw error;
   }
   const beats: Heartbeat[] = [];
   for (const line of raw.split("\n")) {
-    if (line.length === 0) continue;
+    if (line.length === 0) {
+      continue;
+    }
     try {
       beats.push(JSON.parse(line) as Heartbeat);
     } catch (error) {
