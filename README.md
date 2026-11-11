@@ -42,20 +42,16 @@ AI activity is read from `~/.claude`, `~/.codex`, and Cursor transcripts. The fi
 
 ## 🚀 Install
 
-Open the machine in Cursor once so `~/.cursor-server` exists. Then:
+Open the machine in Cursor once so its extensions folder exists. Then:
 
 ```bash
 git clone https://github.com/yog4a/duree.git
 cd duree
 npm install
-npm run build
-DEST="$HOME/.cursor-server/extensions/yogaa.duree-0.3.0"
-mkdir -p "$DEST/dist"
-cp package.json "$DEST/package.json"
-find dist -name '*.js' ! -name '*.test.js' -exec cp {} "$DEST/dist/" \;
+npm run install-cursor
 ```
 
-In Cursor, on that machine: **Developer: Reload Window**.
+That builds Durée, copies it into Cursor, and parks any older copy. In Cursor, on that machine: **Developer: Reload Window**. Run the same command again to update.
 
 Each day is kept as `~/.duree/days/YYYY-MM-DD.jsonl`. Another computer keeps its own files. An old `~/.codetime` folder is renamed to `~/.duree` on first launch, and a single `heartbeats.jsonl` is split into those daily files and kept as `heartbeats.jsonl.archive`.
 
