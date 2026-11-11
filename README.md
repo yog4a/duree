@@ -42,16 +42,32 @@ AI activity is read from `~/.claude`, `~/.codex`, and Cursor transcripts. The fi
 
 ## 🚀 Install
 
-Open the machine in Cursor once so its extensions folder exists. Then:
+Open the machine in Cursor once. In that machine's terminal:
 
 ```bash
-git clone https://github.com/yog4a/duree.git
+git clone --depth 1 https://github.com/yog4a/duree.git
 cd duree
 npm install
 npm run install-cursor
 ```
 
-That builds Durée, copies it into Cursor, and parks any older copy. In Cursor, on that machine: **Developer: Reload Window**. Run the same command again to update.
+That builds `duree.vsix` and installs it with `cursor --install-extension`. Then **Developer: Reload Window**.
+
+## 📦 Install from a VSIX
+
+Build the package:
+
+```bash
+npm run package
+```
+
+The file is `duree.vsix` in this folder. Copy it to the other machine and, in Cursor's terminal:
+
+```bash
+cursor --install-extension duree.vsix
+```
+
+Then **Developer: Reload Window**. No clone and no build on that machine.
 
 Each day is kept as `~/.duree/days/YYYY-MM-DD.jsonl`. Another computer keeps its own files.
 
