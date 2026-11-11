@@ -1,0 +1,32 @@
+{
+  "name": "duree",
+  "displayName": "Durée",
+  "description": "Suivi local des mêmes signaux que WakaTime. Aucun réseau. Le journal garde les compteurs et les chemins, pas le texte.",
+  "version": "0.3.0",
+  "publisher": "yogaa",
+  "license": "UNLICENSED",
+  "engines": {
+    "vscode": "^1.89.0"
+  },
+  "categories": ["Other"],
+  "extensionKind": ["workspace"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./dist/extension.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "node --test dist/heartbeat.test.js dist/dependencies.test.js dist/ai.test.js"
+  },
+  "devDependencies": {
+    "@types/node": "^24.10.0",
+    "@types/vscode": "^1.89.0",
+    "typescript": "^5.9.3"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "duree.showToday",
+        "title": "Durée: aujourd'hui"
+      }
+    ]
+  }
+}
