@@ -1,6 +1,10 @@
 import { readFileSync, readdirSync, statSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
+export function vsixName(version) {
+  return `duree-${version}.vsix`;
+}
+
 export function writeVsix(root, outFile) {
   const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
   const published = {

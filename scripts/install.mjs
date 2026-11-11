@@ -3,7 +3,7 @@ import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, renameSync, s
 import { homedir } from "node:os";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
-import { writeVsix } from "./vsix.mjs";
+import { vsixName, writeVsix } from "./vsix.mjs";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const pkg = JSON.parse(readFileSync(join(root, "package.json"), "utf8"));
@@ -30,7 +30,7 @@ if (!existsSync(built)) {
   process.exit(1);
 }
 
-const vsix = join(root, "duree.vsix");
+const vsix = join(root, vsixName(pkg.version));
 writeVsix(root, vsix);
 const cursor = cursorBin();
 if (cursor && installWithCursor(cursor, vsix)) {
