@@ -1,5 +1,7 @@
 # ⏱️ Durée
 
+🔒 A fully local alternative. The code is short enough to review with an AI and confirm there is no backdoor and nothing that spies on what you type. Everything stays on this machine.
+
 A Cursor extension that tracks coding time **on the machine where the folder is open**.
 
 Each day is its own file in `~/.duree/days/`. Nothing is deleted, and nothing is sent over the network.
@@ -20,7 +22,7 @@ Open the command palette and run **Durée: aujourd'hui** for the full day, or **
 - 💻 editors, systems, and machines
 - 🤖 human lines, AI lines, and tokens
 
-A keystroke is recorded at most once every **2 minutes** per file. A save is always recorded. A pause longer than **15 minutes** ends the session.
+Activity in a file is recorded at most once every **2 minutes**. A save is always recorded. A pause longer than **15 minutes** ends the session. The characters you type are not stored.
 
 ## 📝 What is stored
 
@@ -53,7 +55,7 @@ npm run install-cursor
 
 That builds Durée, copies it into Cursor, and parks any older copy. In Cursor, on that machine: **Developer: Reload Window**. Run the same command again to update.
 
-Each day is kept as `~/.duree/days/YYYY-MM-DD.jsonl`. Another computer keeps its own files. An old `~/.codetime` folder is renamed to `~/.duree` on first launch, and a single `heartbeats.jsonl` is split into those daily files and kept as `heartbeats.jsonl.archive`.
+Each day is kept as `~/.duree/days/YYYY-MM-DD.jsonl`. Another computer keeps its own files.
 
 ## 🛠️ Development
 
