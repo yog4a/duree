@@ -28,7 +28,7 @@ export function heartbeatForDocument(
   const root = info.root ?? folder?.uri.fsPath ?? path.dirname(file);
   const editor = vscode.window.activeTextEditor;
   const position = editor && editor.document.uri.fsPath === file ? editor.selection.active : undefined;
-  const aiEdit = (stats?.lines ?? 0) > 0;
+  const aiEdit = isAiActive(stats);
   return {
     time,
     entity: file,
@@ -90,8 +90,8 @@ export function heartbeatForPath(
     editor: meta.editorName,
     plugin: meta.plugin,
     os: meta.osName,
-    humanLineChanges: aiEdit ? 0 : editorLines,
-    aiLineChanges: aiEdit ? Math.max(stats.lines, editorLines) : 0,
+    humanLineChanges: 0,
+    aiLineChanges: Math.max(stats.lines, editorLines),
     aiSession: stats.session,
     aiInputTokens: stats.inputTokens,
     aiOutputTokens: stats.outputTokens,

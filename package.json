@@ -2,7 +2,7 @@
   "name": "duree",
   "displayName": "Durée",
   "description": "Local coding-time tracker. No network. The journal keeps counters and paths, not text.",
-  "version": "0.5.0",
+  "version": "0.5.1",
   "publisher": "yogaa",
   "license": "UNLICENSED",
   "engines": {

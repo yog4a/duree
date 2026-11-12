@@ -24,8 +24,14 @@ export function summarize(beats: Heartbeat[]): Summary {
     summary.aiInputTokens += beat.aiInputTokens ?? 0;
     summary.aiOutputTokens += beat.aiOutputTokens ?? 0;
     summary.aiPromptLength += beat.aiPromptLength ?? 0;
-    summary.humanLineChanges += beat.humanLineChanges ?? 0;
-    summary.aiLineChanges += beat.aiLineChanges ?? 0;
+    const human = beat.humanLineChanges ?? 0;
+    const ai = beat.aiLineChanges ?? 0;
+    if (beat.category === "ai coding") {
+      summary.aiLineChanges += human + ai;
+    } else {
+      summary.humanLineChanges += human;
+      summary.aiLineChanges += ai;
+    }
   }
   for (let i = 1; i < sorted.length; i++) {
     const gap = sorted[i].time - sorted[i - 1].time;

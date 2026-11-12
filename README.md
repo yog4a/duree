@@ -51,7 +51,7 @@ npm install
 npm run install-cursor
 ```
 
-That builds `duree-0.5.0.vsix` and installs it with `cursor --install-extension`. Then **Developer: Reload Window**.
+That builds `duree-0.5.1.vsix` and installs it with `cursor --install-extension`. Then **Developer: Reload Window**.
 
 ## 📦 Install from a VSIX
 
@@ -61,10 +61,10 @@ Build the package:
 npm run package
 ```
 
-The file is `duree-0.5.0.vsix` in this folder. The name follows the release version. Copy it to the other machine and, in Cursor's terminal:
+The file is `duree-0.5.1.vsix` in this folder. The name follows the release version. Copy it to the other machine and, in Cursor's terminal:
 
 ```bash
-cursor --install-extension duree-0.5.0.vsix
+cursor --install-extension duree-0.5.1.vsix
 ```
 
 Then **Developer: Reload Window**. No clone and no build on that machine.

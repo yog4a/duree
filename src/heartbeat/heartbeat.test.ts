@@ -105,6 +105,16 @@ test("ai activity wins, then debug, build, review, coding", () => {
   assert.equal(categoryFor({ aiActive: false, debugging: false, building: false, reviewing: false }), "coding");
 });
 
+test("lines on an ai coding beat count as AI", () => {
+  const sample = beat(0);
+  sample.category = "ai coding";
+  sample.humanLineChanges = 10;
+  sample.aiLineChanges = 4;
+  const summary = summarize([sample, beat(60)]);
+  assert.equal(summary.humanLineChanges, 0);
+  assert.equal(summary.aiLineChanges, 14);
+});
+
 test("a timestamp stays on its local calendar day", () => {
   const noon = new Date(2026, 10, 11, 12, 0, 0).getTime() / 1000;
   assert.equal(dayKey(noon), "2026-11-11");
